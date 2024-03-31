@@ -1,5 +1,5 @@
-#include "Motor_pins.h"
-#include "Motor.h"
+#include "Motor_pins.hpp"
+#include "Motor.hpp"
 
 //! INSTANCES
 Motor motor_derecho(1,300, 10, 10);
@@ -13,9 +13,11 @@ void setup()
     pinMode(MOTOR1_STOP_PIN, INPUT);
     pinMode(MOTOR2_START_PIN, INPUT);
     pinMode(MOTOR2_STOP_PIN, INPUT);
+    pinMode(MOTOR_SELECTION, INPUT);
     pinMode(MOTOR1_PWM_PIN, OUTPUT);
     pinMode(MOTOR2_PWM_PIN, OUTPUT);
     pinMode(MOTOR1_FAULT, OUTPUT);
+    pinMode(MOTOR2_FAULT, OUTPUT);
 
     //! INITS
     motor_derecho._init();
@@ -24,6 +26,6 @@ void setup()
 
 void loop()
 {
-    motor_derecho.motor_selection();
+    
     motor_derecho.start_motor();
 }

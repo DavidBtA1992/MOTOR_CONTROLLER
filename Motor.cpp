@@ -1,11 +1,12 @@
-#include "Motor.h"
-#include "Motor_pins.h"
+#include "Motor.hpp"
+#include "Motor_pins.hpp"
 #include <Arduino.h>
 
 //! GLOBALS
 
 int speed_pin = 0;
-int speed_fb = 0;
+int speed_fb_pin = 0;
+int fault_pin = 0;
 bool faulted = 0;
 
 Motor::Motor(int motor, int speed, int accel_ramp, int decel_ramp)
@@ -42,7 +43,7 @@ void Motor::start_motor()
                 j++;
             } while (j <= _accel_ramp);
 
-            if (analogRead(speed_fb) == _speed)
+            if (analogRead(speed_fb_pin) == _speed)
             {
                 _started = true;
                 return;
@@ -60,6 +61,8 @@ void Motor::start_motor()
 
 void Motor::stop_motor()
 {
+    Motor:motor_selection();
+    
     if (_stopped != true)
     {
         analogWrite(speed_pin, 0);
@@ -76,13 +79,13 @@ void Motor::motor_selection()
     {
     case 1:
         speed_pin = MOTOR1_PWM_PIN;
-        speed_fb = MOTOR1_FB_PIN;
-        //MOTOR1_FAULT;
+        speed_fb_pin = MOTOR1_FB_PIN;
+        fault_pin = MOTOR1_FAULT;
         break;
     case 2:
         speed_pin = MOTOR2_PWM_PIN;
-        speed_fb = MOTOR2_FB_PIN;
-        //MOTOR2_FAULT;
+        speed_fb_pin = MOTOR2_FB_PIN;
+        fault_pin = MOTOR2_FAULT;
         break;
     default:
         break;
@@ -122,5 +125,5 @@ bool Motor::at_speed()
 }
 int Motor::motor_speed()
 {
-    return (analogRead(speed_fb));
+    return (analogRead(speed_fb_pin));
 }

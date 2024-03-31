@@ -1,6 +1,8 @@
 #ifndef Pins_Motor_h
 #define Pins_Motor_h
 
+#define MOTOR_SELECTION A3
+
 #define MOTOR1_SPEED A0
 #define MOTOR2_SPEED A1
 
