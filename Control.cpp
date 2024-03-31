@@ -2,12 +2,6 @@
 #include "Motor_pins.hpp"
 #include <Arduino.h>
 
-//! GLOBALS
-
-int start_pin = 0;
-int stop_pin = 0;
-int analog_pin = 0;
-
 Control::Control()
 {
 }
@@ -29,39 +23,22 @@ void Control::motor_selection()
     {
         _motor = 2;
     }
-
-    switch (_motor)
-    {
-    case 1:
-        start_pin = MOTOR1_START_PIN;
-        stop_pin = MOTOR1_STOP_PIN;
-        analog_pin = MOTOR1_SPEED;
-        break;
-    case 2:
-        start_pin = MOTOR2_START_PIN;
-        stop_pin = MOTOR2_STOP_PIN;
-        analog_pin = MOTOR2_SPEED;
-        break;
-    default:
-        break;
-    }
     return;
 }
 
 void Control::start_button_pressed()
 {
-    motor_selection();
-    if (digitalRead(start_pin) == true && digitalRead(stop_pin) == false)
+    if (digitalRead(MOTOR_START_PIN) == true && digitalRead(MOTOR_STOP_PIN) == false)
     {
         Control::_startstate = true;
         Control::_stopstate = false;
     }
+    return;
 }
 
 void Control::stop_button_pressed()
 {
-    motor_selection();
-    if (digitalRead(stop_pin) == true)
+    if (digitalRead(MOTOR_STOP_PIN) == true)
     {
         Control::_stopstate = true;
         Control::_startstate = false;
@@ -70,8 +47,8 @@ void Control::stop_button_pressed()
 
 int Control::read_analog_input()
 {
-    motor_selection();
-    return analogRead(analog_pin);
+    _analoginput = analogRead(MOTOR_SPEED);
+    return _analoginput;
 }
 
 // Getters

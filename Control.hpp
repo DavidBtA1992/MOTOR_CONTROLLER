@@ -5,9 +5,9 @@
 class Control
 {
 private:
-    bool _motor;
     bool _startstate;
     bool _stopstate;
+    int _motor;
     int _analoginput;
 
 public:

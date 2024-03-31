@@ -127,3 +127,7 @@ int Motor::motor_speed()
 {
     return (analogRead(speed_fb_pin));
 }
+int Motor::motor_selected()
+{
+    return (_motor);
+}

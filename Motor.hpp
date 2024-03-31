@@ -30,6 +30,7 @@ public:
     int accel_ramp_set(int x);
     int decel_ramp_set(int x);
     int motor_speed();
+    int motor_selected();
 };
 
 #endif
