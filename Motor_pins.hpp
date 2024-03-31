@@ -13,7 +13,7 @@
 #define MOTOR2_PWM_PIN PIN6
 #define MOTOR2_FB_PIN A2
 
-#define MOTOR1_FAULT A4
-#define MOTOR2_FAULT A5
+#define MOTOR_STARTED A5
+#define MOTOR_FAULTED A4
 
 #endif

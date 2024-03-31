@@ -6,7 +6,6 @@
 
 int speed_pin = 0;
 int speed_fb_pin = 0;
-int fault_pin = 0;
 bool faulted = 0;
 
 Motor::Motor(int motor, int speed, int accel_ramp, int decel_ramp)
@@ -18,17 +17,18 @@ Motor::Motor(int motor, int speed, int accel_ramp, int decel_ramp)
 // Init
 void Motor::_init()
 {
-    _started = 0;
-    _stopped = 0;
-    _faulted = 0;
-    _atspeed = 0;
-    _accel_ramp = 0;
-    _decel_ramp = 0;
+    _started = false;
+    _stopped = false;
+    _faulted = false;
+    _atspeed = false;
 }
 // Start Motor
 
 void Motor::start_motor()
 {
+Motor:
+    motor_selection();
+
     if (_started != true)
     {
         int j = 0;
@@ -50,7 +50,7 @@ void Motor::start_motor()
             }
             failure_time++;
 
-        } while (failure_time <= 100);
+        } while (failure_time <= 10);
         _started = false;
         _faulted = true;
     }
@@ -60,16 +60,38 @@ void Motor::start_motor()
 // Stop Motor
 
 void Motor::stop_motor()
+
 {
-    Motor:motor_selection();
-    
+Motor:
+    motor_selection();
+
     if (_stopped != true)
     {
+        int j = 0;
+        int failure_time = 0;
+
         analogWrite(speed_pin, 0);
-        _started = false;
-        _stopped = true;
+
+        do
+        {
+            do
+            {
+                j++;
+            } while (j <= _decel_ramp);
+
+            if (analogRead(speed_fb_pin) == 0)
+            {
+                _stopped = true;
+                return;
+            }
+            failure_time++;
+
+        } while (failure_time <= 10);
+        _stopped = false;
+        _faulted = true;
     }
-};
+    return;
+}
 
 // Motor selection
 
@@ -80,12 +102,10 @@ void Motor::motor_selection()
     case 1:
         speed_pin = MOTOR1_PWM_PIN;
         speed_fb_pin = MOTOR1_FB_PIN;
-        fault_pin = MOTOR1_FAULT;
         break;
     case 2:
         speed_pin = MOTOR2_PWM_PIN;
         speed_fb_pin = MOTOR2_FB_PIN;
-        fault_pin = MOTOR2_FAULT;
         break;
     default:
         break;

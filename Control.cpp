@@ -2,6 +2,11 @@
 #include "Motor_pins.hpp"
 #include <Arduino.h>
 
+//! GLOBALS
+
+bool switch_change;
+bool switch_past_state = 0;
+
 Control::Control()
 {
 }
@@ -15,6 +20,14 @@ void Control::_init()
 
 void Control::motor_selection()
 {
+    switch_change = digitalRead(MOTOR_SELECTION);
+    if (switch_past_state != switch_change)
+    {
+        Control::_startstate = false;
+        Control::_stopstate = false;
+        switch_past_state = switch_change;
+    }
+    
     if (digitalRead(MOTOR_SELECTION) == 0)
     {
         _motor = 1;

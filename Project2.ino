@@ -17,14 +17,53 @@ void setup()
     pinMode(MOTOR_SELECTION, INPUT);
     pinMode(MOTOR1_PWM_PIN, OUTPUT);
     pinMode(MOTOR2_PWM_PIN, OUTPUT);
-    pinMode(MOTOR1_FAULT, OUTPUT);
-    pinMode(MOTOR2_FAULT, OUTPUT);
+    pinMode(MOTOR_STARTED, OUTPUT);
+    pinMode(MOTOR_FAULTED, OUTPUT);
 
     //! INITS
     control._init();
     motor_derecho._init();
     motor_izquierdo._init();
 }
+
+//! FUNCTIONS
+
+void motor_controller(Control selected_control, Motor selected_motor)
+{
+    if (selected_control.motorselected() == selected_motor.motor_selected())
+    {
+        if (selected_control.startstate())
+        {
+            selected_motor.speed_set(selected_control.analoginputstate());
+            selected_motor.start_motor();
+
+        }
+        if (selected_control.stopstate())
+        {
+            selected_motor.stop_motor();
+        }
+        
+    }
+
+    if (selected_motor.faulted())
+    {
+        digitalWrite(MOTOR_FAULTED, HIGH);
+    }
+
+    if (selected_motor.started())
+    {
+        digitalWrite(MOTOR_STARTED, HIGH);
+    }
+
+    if (selected_motor.stopped())
+    {
+        digitalWrite(MOTOR_STARTED, LOW);
+    }
+    
+    
+    
+}
+
 
 void loop()
 {
@@ -33,21 +72,6 @@ void loop()
     control.stop_button_pressed();
     control.read_analog_input();
 
-    if (control.motorselected() == motor_derecho.motor_selected())
-    {
-        if (control.startstate())
-        {
-            motor_derecho.speed_set(control.analoginputstate());
-            motor_derecho.start_motor();
-        }
-    }
-    
-    if (control.motorselected() == motor_izquierdo.motor_selected())
-    {
-        if (control.startstate())
-        {
-            motor_izquierdo.speed_set(control.analoginputstate());
-            motor_izquierdo.start_motor();
-        }
-    }
+    motor_controller(control,motor_derecho);
+    motor_controller(control,motor_izquierdo);
 }
